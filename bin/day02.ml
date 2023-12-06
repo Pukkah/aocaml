@@ -24,7 +24,7 @@ let parse_cube str =
 
 let colors_to_tuple colors =
   let rec aux (r, g, b) = function
-    | [] -> Red r, Green g, Blue b
+    | [] -> r, g, b
     | Red n :: tl -> aux (n, g, b) tl
     | Green n :: tl -> aux (r, n, b) tl
     | Blue n :: tl -> aux (r, g, n) tl
@@ -45,7 +45,7 @@ let parse_game line =
 ;;
 
 let games = List.map parse_game lines
-let max_r, max_g, max_b = Red 12, Green 13, Blue 14
+let max_r, max_g, max_b = 12, 13, 14
 
 (* Part 1 *)
 let part1 =
@@ -56,4 +56,19 @@ let part1 =
   |> List.fold_left (fun acc (id, _) -> acc + id) 0
 ;;
 
-let run () = print_endline @@ "Part 1: " ^ string_of_int part1
+(* Part 2 *)
+let part2 =
+  List.map
+    (fun (_, rounds) ->
+      List.fold_left
+        (fun (ar, ag, ab) (r, g, b) -> max r ar, max g ag, max b ab)
+        (0, 0, 0)
+        rounds)
+    games
+  |> List.fold_left (fun acc (r, g, b) -> acc + (r * g * b)) 0
+;;
+
+let run () =
+  print_endline @@ "Part 1: " ^ string_of_int part1;
+  print_endline @@ "Part 2: " ^ string_of_int part2
+;;

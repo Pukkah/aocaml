@@ -21,22 +21,36 @@ let hands =
     | _ -> failwith "invalid input")
 ;;
 
-let get_type hand =
-  match List.sort ( - ) hand with
-  (* five of a kind *)
-  | [ a; b; c; d; e ] when a = b && b = c && c = d && d = e -> 6
-  (* four of a kind *)
-  | [ a; b; c; d; e ] when (a = b && b = c && c = d) || (b = c && c = d && d = e) -> 5
-  (* full house *)
-  | [ a; b; c; d; e ] when (a = b && b = c && d = e) || (a = b && c = d && d = e) -> 4
-  (* three of a kind *)
-  | [ a; b; c; d; e ] when (a = b && b = c) || (b = c && c = d) || (c = d && d = e) -> 3
-  (* two pairs *)
-  | [ a; b; c; d; e ] when (a = b && c = d) || (a = b && d = e) || (b = c && d = e) -> 2
-  (* one pair *)
-  | [ a; b; c; d; e ] when a = b || b = c || c = d || d = e -> 1
-  (* high card *)
-  | _ -> 0
+module CardMap = Map.Make (Int)
+
+let count_cards list =
+  let add_card count_map card =
+    let count =
+      match CardMap.find_opt card count_map with
+      | Some c -> c + 1
+      | None -> 1
+    in
+    CardMap.add card count count_map
+  in
+  List.fold_left add_card CardMap.empty list
+;;
+
+let joker = 1
+
+let get_rank hand =
+  let counted = count_cards hand in
+  let jokers =
+    match CardMap.find_opt joker counted with
+    | Some c -> c
+    | None -> 0
+  in
+  let cleaned = CardMap.remove joker counted |> CardMap.bindings |> List.map snd in
+  match jokers with
+  | 5 -> 9
+  | _ ->
+    let unique = List.length cleaned in
+    let high = List.sort ( - ) cleaned |> List.rev |> List.hd in
+    5 - unique + high + jokers
 ;;
 
 let rec tiebreak hand1 hand2 =
@@ -48,17 +62,32 @@ let rec tiebreak hand1 hand2 =
 ;;
 
 let compare (hand1, _) (hand2, _) =
-  match get_type hand1, get_type hand2 with
+  match get_rank hand1, get_rank hand2 with
   | a, b when a > b -> 1
   | a, b when a < b -> -1
   | _ -> tiebreak hand1 hand2
 ;;
 
-let part1 =
-  hands
+let solve list =
+  list
   |> List.sort compare
-  |> List.mapi (fun i (_, score) -> score * (i + 1))
+  |> List.mapi (fun i x -> snd x * (i + 1))
   |> List.fold_left ( + ) 0
 ;;
 
-let run () = print_endline @@ string_of_int part1
+(* Part 1 *)
+let part1 = solve hands
+
+(* Part 2 *)
+let part2 =
+  List.map
+    (fun (hand, score) ->
+      List.map (fun card -> if card = 11 then joker else card) hand, score)
+    hands
+  |> solve
+;;
+
+let run () =
+  print_endline @@ "Part 1: " ^ string_of_int part1;
+  print_endline @@ "Part 2: " ^ string_of_int part2
+;;

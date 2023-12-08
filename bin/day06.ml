@@ -1,13 +1,7 @@
 let input = "Time:        52     94     75     94\nDistance:   426   1374   1279   1216"
 
-let parse_numbers str =
-  String.split_on_char ' ' str
-  |> List.map int_of_string_opt
-  |> List.filter_map (fun x -> x)
-;;
-
 let times, distances =
-  let list = Util.get_lines input |> List.map parse_numbers in
+  let list = Util.get_lines input |> List.map Util.parse_numbers in
   match list with
   | [ times; distances ] -> times, distances
   | _ -> failwith "Invalid input"

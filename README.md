@@ -1,6 +1,6 @@
-# Adven of Code 2023 - OCaml (aocaml)
+## Adven of Code 2023 - OCaml (aocaml)
 
-## Overview
+### Overview
 
 This is my attempt at solving the [Advent of Code 2023](https://adventofcode.com/2023) problems in OCaml.
 

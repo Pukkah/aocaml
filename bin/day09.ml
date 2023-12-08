@@ -5,7 +5,7 @@ let sequences =
   |> List.map (fun line -> String.split_on_char ' ' line |> List.map int_of_string)
 ;;
 
-let predict sequence =
+let predict =
   let rec aux acc = function
     | [ _ ] -> acc
     | a :: b :: tl -> aux ((b - a) :: acc) (b :: tl)
@@ -17,8 +17,16 @@ let predict sequence =
       let next = aux [] (List.rev list) in
       aux2 (List.hd list :: acc) next
   in
-  aux2 [] (List.rev sequence)
+  aux2 []
 ;;
 
-let part1 = List.map predict sequences |> Util.sum
-let run () = print_endline @@ "Part1: " ^ string_of_int part1
+(* Part1 *)
+let part1 = List.map (fun seq -> predict @@ List.rev seq) sequences |> Util.sum
+
+(* Part2 *)
+let part2 = List.map predict sequences |> Util.sum
+
+let run () =
+  print_endline @@ "Part 1: " ^ string_of_int part1;
+  print_endline @@ "Part 2: " ^ string_of_int part2
+;;

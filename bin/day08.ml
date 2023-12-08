@@ -28,16 +28,26 @@ let maze =
   | _ -> failwith "Invalid input"
 ;;
 
-let solve instructions maze =
+let ghosts = StringMap.bindings maze |> List.map fst |> List.filter (fun s -> s.[2] = 'A')
+
+let solve =
   let rec aux step = function
-    | "ZZZ" -> step
+    | s when s.[2] = 'Z' -> step
     | elem ->
       let l, r = StringMap.find elem maze in
       let next = if instructions.(step mod len) then r else l in
       aux (step + 1) next
   in
-  aux 0 "AAA"
+  aux 0
 ;;
 
-let part1 = solve instructions maze
-let run () = print_endline @@ "Part 1: " ^ string_of_int part1
+(* Part 1 *)
+let part1 = solve "AAA"
+
+(* Part 2 *)
+let part2 = List.map solve ghosts |> List.fold_left Util.lcm 1
+
+let run () =
+  print_endline @@ "Part 1: " ^ string_of_int part1;
+  print_endline @@ "Part 2: " ^ string_of_int part2
+;;

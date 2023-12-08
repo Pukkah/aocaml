@@ -26,4 +26,23 @@ let cards = List.map parse_card lines
 
 (* Part 1 *)
 let part1 = List.fold_left (fun acc x -> acc + score x) 0 cards
-let run () = print_endline @@ "Part 1: " ^ string_of_int part1
+
+(* Part 2 *)
+let part2 =
+  let arr = Array.init (List.length cards) (fun _ -> ref 1) in
+  List.mapi
+    (fun i x ->
+      let tickets = !(arr.(i)) in
+      for j = 1 to x do
+        let k = arr.(i + j) in
+        k := !k + tickets
+      done;
+      tickets)
+    cards
+  |> List.fold_left ( + ) 0
+;;
+
+let run () =
+  print_endline @@ "Part 1: " ^ string_of_int part1;
+  print_endline @@ "Part 2: " ^ string_of_int part2
+;;

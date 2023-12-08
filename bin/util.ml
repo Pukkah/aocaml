@@ -3,6 +3,9 @@
 (** Split string on newlines *)
 let get_lines = String.split_on_char '\n'
 
+(** Sum of a list of integers *)
+let sum = List.fold_left ( + ) 0
+
 (** Slits string on whitespace and extracts integers *)
 let parse_numbers str =
   String.split_on_char ' ' str

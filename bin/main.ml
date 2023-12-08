@@ -8,5 +8,6 @@ let () =
   | Some 6 -> Day06.run ()
   | Some 7 -> Day07.run ()
   | Some 8 -> Day08.run ()
+  | Some 9 -> Day09.run ()
   | _ -> failwith "Invalid day"
 ;;

@@ -1,13 +1,14 @@
 let input =
-  "...........\n\
-   .S-------7.\n\
-   .|F-----7|.\n\
-   .||.....||.\n\
-   .||.....||.\n\
-   .|L-7.F-J|.\n\
-   .|..|.|..|.\n\
-   .L--J.L--J.\n\
-   ..........."
+  "FF7FSF7F7F7F7F7F---7\n\
+   L|LJ||||||||||||F--J\n\
+   FL-7LJLJ||||||LJL-77\n\
+   F--JF--7||LJLJ7F7FJ-\n\
+   L---JF-JLJ.||-FJLJJ7\n\
+   |F|F-JF---7F7-L7L|7|\n\
+   |FFJF7L7F-JF7|JL---7\n\
+   7-L-JL7||F7|L7F-7F7|\n\
+   L.L7LFJ|||||FJL7||LJ\n\
+   L7JLJL-JLJLJL--JLJ.L"
 ;;
 
 let lines = Util.get_lines input
@@ -23,13 +24,13 @@ module PosSet = Set.Make (Pos)
 
 let pipe_opt x y c =
   match c with
-  | 'S' -> Some ((x, y), [ x + 1, y; x, y + 1; x - 1, y; x, y - 1 ])
-  | 'J' -> Some ((x, y), [ x, y - 1; x - 1, y ])
-  | 'L' -> Some ((x, y), [ x, y - 1; x + 1, y ])
-  | '7' -> Some ((x, y), [ x, y + 1; x - 1, y ])
-  | 'F' -> Some ((x, y), [ x, y + 1; x + 1, y ])
   | '|' -> Some ((x, y), [ x, y + 1; x, y - 1 ])
   | '-' -> Some ((x, y), [ x + 1, y; x - 1, y ])
+  | 'L' -> Some ((x, y), [ x, y - 1; x + 1, y ])
+  | 'J' -> Some ((x, y), [ x, y - 1; x - 1, y ])
+  | '7' -> Some ((x, y), [ x, y + 1; x - 1, y ])
+  | 'F' -> Some ((x, y), [ x, y + 1; x + 1, y ])
+  | 'S' -> Some ((x, y), [ x + 1, y; x, y + 1; x - 1, y; x, y - 1 ])
   | _ -> None
 ;;
 
@@ -47,7 +48,14 @@ let pipe_map =
 ;;
 
 let start = List.find (fun x -> List.length (snd x) = 4) pipes |> fst
-let fist_pos = PosMap.find start pipe_map |> List.find (fun x -> PosMap.mem x pipe_map)
+
+let fist_pos =
+  PosMap.find start pipe_map
+  |> List.find (fun x ->
+    match PosMap.find_opt x pipe_map with
+    | Some pos_list -> List.exists (( = ) start) pos_list
+    | None -> false)
+;;
 
 let rec walk step acc curr =
   let next = PosMap.find curr pipe_map |> List.find (fun x -> x <> List.hd acc) in
@@ -58,13 +66,16 @@ let rec walk step acc curr =
 
 let part1, path = walk 0 [ start ] fist_pos
 
-let pipe = function
-  | 'J' -> "╯"
-  | 'L' -> "╰"
-  | '7' -> "╮"
-  | 'F' -> "╭"
+let print_pipe c =
+  print_string
+  @@
+  match c with
   | '|' -> "│"
   | '-' -> "─"
+  | 'L' -> "╰"
+  | 'J' -> "╯"
+  | '7' -> "╮"
+  | 'F' -> "╭"
   | c -> Char.escaped c
 ;;
 
@@ -79,11 +90,11 @@ let part2 () =
         then (
           (* 'S' -> 'F' is specificly for my input.
              I'm too lazy (it's sunday) calculate it *)
-          let c = if c = 'S' then 'F' else c in
-          if c = '|' || (c = 'J' && !last = 'F') || (c = '7' && !last = 'L')
+          let p = if c = 'S' then 'F' else c in
+          if p = '|' || (p = 'J' && !last = 'F') || (p = '7' && !last = 'L')
           then count := !count + 1;
-          if c = 'F' || c = 'L' then last := c;
-          print_string (pipe c))
+          if p = 'F' || p = 'L' then last := p;
+          print_pipe c)
         else if !count mod 2 = 1
         then (
           enclosed := !enclosed + 1;

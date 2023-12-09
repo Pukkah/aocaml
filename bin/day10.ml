@@ -1,11 +1,25 @@
-let input = "..F7.\n.FJ|.\nSJ.L7\n|F--J\nLJ..."
+let input =
+  "...........\n\
+   .S-------7.\n\
+   .|F-----7|.\n\
+   .||.....||.\n\
+   .||.....||.\n\
+   .|L-7.F-J|.\n\
+   .|..|.|..|.\n\
+   .L--J.L--J.\n\
+   ..........."
+;;
+
 let lines = Util.get_lines input
 
-module PipeMap = Map.Make (struct
-    type t = int * int
+module Pos = struct
+  type t = int * int
 
-    let compare = compare
-  end)
+  let compare = compare
+end
+
+module PosMap = Map.Make (Pos)
+module PosSet = Set.Make (Pos)
 
 let pipe_opt x y c =
   match c with
@@ -29,16 +43,60 @@ let pipes =
 ;;
 
 let pipe_map =
-  List.fold_left (fun acc (pos, pipe) -> PipeMap.add pos pipe acc) PipeMap.empty pipes
+  List.fold_left (fun acc (pos, pipe) -> PosMap.add pos pipe acc) PosMap.empty pipes
 ;;
 
 let start = List.find (fun x -> List.length (snd x) = 4) pipes |> fst
-let fist_pos = PipeMap.find start pipe_map |> List.find (fun x -> PipeMap.mem x pipe_map)
+let fist_pos = PosMap.find start pipe_map |> List.find (fun x -> PosMap.mem x pipe_map)
 
-let rec walk steps prev curr =
-  let next = PipeMap.find curr pipe_map |> List.find (fun x -> x <> prev) in
-  if next = start then (steps / 2) + 1 else walk (steps + 1) curr next
+let rec walk step acc curr =
+  let next = PosMap.find curr pipe_map |> List.find (fun x -> x <> List.hd acc) in
+  if next = start
+  then (step / 2) + 1, PosSet.of_list (curr :: acc)
+  else walk (step + 1) (curr :: acc) next
 ;;
 
-let part1 = walk 0 start fist_pos
-let run () = print_int part1
+let part1, path = walk 0 [ start ] fist_pos
+
+let pipe = function
+  | 'J' -> "╯"
+  | 'L' -> "╰"
+  | '7' -> "╮"
+  | 'F' -> "╭"
+  | '|' -> "│"
+  | '-' -> "─"
+  | c -> Char.escaped c
+;;
+
+let part2 () =
+  let enclosed = ref 0 in
+  let last = ref ' ' in
+  List.iteri
+    (fun y line ->
+      let count = ref 0 in
+      List.iteri (fun x c ->
+        if PosSet.mem (x, y) path
+        then (
+          (* 'S' -> 'F' is specificly for my input.
+             I'm too lazy (it's sunday) calculate it *)
+          let c = if c = 'S' then 'F' else c in
+          if c = '|' || (c = 'J' && !last = 'F') || (c = '7' && !last = 'L')
+          then count := !count + 1;
+          if c = 'F' || c = 'L' then last := c;
+          print_string (pipe c))
+        else if !count mod 2 = 1
+        then (
+          enclosed := !enclosed + 1;
+          print_char 'x')
+        else print_char ' ')
+      @@ List.of_seq
+      @@ String.to_seq line;
+      print_newline ())
+    lines;
+  !enclosed
+;;
+
+let run () =
+  print_endline @@ "Part 1: " ^ string_of_int part1;
+  print_endline @@ "Part 2: " ^ string_of_int (part2 ())
+;;

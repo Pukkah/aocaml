@@ -16,6 +16,8 @@ let lines = Util.get_lines input
 module Pos = struct
   type t = int * int
 
+  let sub (x1, y1) (x2, y2) = x2 - x1, y2 - y1
+  let add (x1, y1) (x2, y2) = x2 + x1, y2 + y1
   let compare = compare
 end
 
@@ -49,7 +51,7 @@ let pipe_map =
 
 let start = List.find (fun x -> List.length (snd x) = 4) pipes |> fst
 
-let fist_pos =
+let first_pos =
   PosMap.find start pipe_map
   |> List.find (fun x ->
     match PosMap.find_opt x pipe_map with
@@ -60,11 +62,23 @@ let fist_pos =
 let rec walk step acc curr =
   let next = PosMap.find curr pipe_map |> List.find (fun x -> x <> List.hd acc) in
   if next = start
-  then (step / 2) + 1, PosSet.of_list (curr :: acc)
+  then (step / 2) + 1, PosSet.of_list (curr :: acc), curr
   else walk (step + 1) (curr :: acc) next
 ;;
 
-let part1, path = walk 0 [ start ] fist_pos
+let part1, path, last_pos = walk 0 [ start ] first_pos
+
+let start_shape =
+  let a = Pos.sub start first_pos in
+  let b = Pos.sub start last_pos in
+  match Pos.add a b with
+  | 0, 0 -> if fst a = fst b then '|' else '-'
+  | 1, 1 -> 'F'
+  | 1, -1 -> 'L'
+  | -1, 1 -> '7'
+  | -1, -1 -> 'J'
+  | _ -> failwith "invalid shape"
+;;
 
 let print_pipe c =
   print_string
@@ -79,7 +93,7 @@ let print_pipe c =
   | c -> Char.escaped c
 ;;
 
-let part2 () =
+let calc_part2 () =
   let enclosed = ref 0 in
   let last = ref ' ' in
   List.iteri
@@ -88,9 +102,7 @@ let part2 () =
       List.iteri (fun x c ->
         if PosSet.mem (x, y) path
         then (
-          (* 'S' -> 'F' is specificly for my input.
-             I'm too lazy (it's sunday) calculate it *)
-          let p = if c = 'S' then 'F' else c in
+          let p = if c = 'S' then start_shape else c in
           if p = '|' || (p = 'J' && !last = 'F') || (p = '7' && !last = 'L')
           then count := !count + 1;
           if p = 'F' || p = 'L' then last := p;
@@ -108,6 +120,7 @@ let part2 () =
 ;;
 
 let run () =
+  let part2 = calc_part2 () in
   print_endline @@ "Part 1: " ^ string_of_int part1;
-  print_endline @@ "Part 2: " ^ string_of_int (part2 ())
+  print_endline @@ "Part 2: " ^ string_of_int part2
 ;;

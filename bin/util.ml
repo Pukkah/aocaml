@@ -18,3 +18,21 @@ let rec gcd a b = if b = 0 then a else gcd b (a mod b)
 
 (** Least common multiple *)
 let lcm a b = a / gcd a b * b
+
+(** Rotates a list of N lists of size M into M lists of size N. *)
+let rec rotate =
+  let rec heads = function
+    | [] -> []
+    | [] :: _ -> failwith "Invalid list"
+    | (x :: _) :: t -> x :: heads t
+  in
+  let rec tails = function
+    | [] -> []
+    | [] :: _ -> failwith "Invalid list"
+    | (_ :: x) :: t -> x :: tails t
+  in
+  function
+  | [] -> []
+  | [] :: t -> rotate t
+  | l -> heads l :: rotate (tails l)
+;;

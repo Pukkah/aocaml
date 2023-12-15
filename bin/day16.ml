@@ -64,8 +64,29 @@ let solve start dir grid =
   PosSet.cardinal ilum
 ;;
 
+let part1 grid = solve (0, 0) (1, 0) grid
+
+let part2 grid =
+  let best = ref 0
+  and max_x = Array.length grid.(0) - 1
+  and max_y = Array.length grid - 1 in
+  for x = 0 to max_x do
+    best := max !best @@ solve (x, 0) (0, 1) grid
+  done;
+  for x = 0 to max_x do
+    best := max !best @@ solve (x, max_y) (0, -1) grid
+  done;
+  for y = 0 to max_y do
+    best := max !best @@ solve (0, y) (1, 0) grid
+  done;
+  for y = 0 to max_y do
+    best := max !best @@ solve (max_x, y) (-1, 0) grid
+  done;
+  !best
+;;
+
 let run () =
   let grid = parse_input input in
-  let ans = solve (0, 0) (1, 0) grid in
-  print_int ans
+  Printf.printf "Part 1: %d\n" @@ part1 grid;
+  Printf.printf "Part 2: %d\n" @@ part2 grid
 ;;

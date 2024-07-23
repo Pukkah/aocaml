@@ -7,6 +7,7 @@ let () =
   match year, day with
   | 2023, 1 -> Year2023.Day01.run ()
   | 2023, 2 -> Year2023.Day02.run ()
+  | 2023, 3 -> Day03.run ()
   | 2023, 4 -> Year2023.Day04.run ()
   | 2023, 6 -> Year2023.Day06.run ()
   | 2023, 7 -> Year2023.Day07.run ()
@@ -19,7 +20,10 @@ let () =
   | 2023, 14 -> Year2023.Day14.run ()
   | 2023, 15 -> Year2023.Day15.run ()
   | 2023, 16 -> Year2023.Day16.run ()
+  | 2023, 17 -> Day17.run ()
   | 2023, 19 -> Year2023.Day19.run ()
+  | 2023, 20 -> Day20.run ()
   | 2023, 21 -> Year2023.Day21.run ()
+  | 2023, 23 -> Day23.run ()
   | _ -> failwith "not implemented"
 ;;

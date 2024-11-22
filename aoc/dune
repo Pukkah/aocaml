@@ -1,0 +1,8 @@
+(library
+ (name advent_of_code)
+ (libraries util)
+ (inline_tests)
+ (preprocess
+  (pps ppx_inline_test)))
+
+(include_subdirs qualified)

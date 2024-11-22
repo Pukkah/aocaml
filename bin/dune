@@ -1,4 +1,4 @@
 (executable
- (public_name aoc)
  (name main)
- (libraries aoc))
+ (public_name aoc)
+ (libraries advent_of_code))

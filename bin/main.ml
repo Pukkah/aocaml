@@ -1,22 +1,25 @@
+open Advent_of_code
+
 let () =
-  let day = Sys.argv.(1) in
-  print_endline ("\nAdvent of Code 2023 - Day " ^ day);
-  match int_of_string_opt day with
-  | Some 1 -> Day01.run ()
-  | Some 2 -> Day02.run ()
-  | Some 4 -> Day04.run ()
-  | Some 6 -> Day06.run ()
-  | Some 7 -> Day07.run ()
-  | Some 8 -> Day08.run ()
-  | Some 9 -> Day09.run ()
-  | Some 10 -> Day10.run ()
-  | Some 11 -> Day11.run ()
-  | Some 12 -> Day12.run ()
-  | Some 13 -> Day13.run ()
-  | Some 14 -> Day14.run ()
-  | Some 15 -> Day15.run ()
-  | Some 16 -> Day16.run ()
-  | Some 19 -> Day19.run ()
-  | Some 21 -> Day21.run ()
-  | _ -> failwith "Invalid day"
+  let year = int_of_string Sys.argv.(1)
+  and day = int_of_string Sys.argv.(2) in
+  Printf.printf "\nAdvent of Code %i - Day %i\n" year day;
+  match year, day with
+  | 2023, 1 -> Year2023.Day01.run ()
+  | 2023, 2 -> Year2023.Day02.run ()
+  | 2023, 4 -> Year2023.Day04.run ()
+  | 2023, 6 -> Year2023.Day06.run ()
+  | 2023, 7 -> Year2023.Day07.run ()
+  | 2023, 8 -> Year2023.Day08.run ()
+  | 2023, 9 -> Year2023.Day09.run ()
+  | 2023, 10 -> Year2023.Day10.run ()
+  | 2023, 11 -> Year2023.Day11.run ()
+  | 2023, 12 -> Year2023.Day12.run ()
+  | 2023, 13 -> Year2023.Day13.run ()
+  | 2023, 14 -> Year2023.Day14.run ()
+  | 2023, 15 -> Year2023.Day15.run ()
+  | 2023, 16 -> Year2023.Day16.run ()
+  | 2023, 19 -> Year2023.Day19.run ()
+  | 2023, 21 -> Year2023.Day21.run ()
+  | _ -> failwith "not implemented"
 ;;

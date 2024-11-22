@@ -14,5 +14,5 @@ This is my attempt at solving the [Advent of Code 2023](https://adventofcode.com
 ### How to run
 
 ```shell
-dune exec aoc [DAY_NUMBER]
+dune exec aoc [YEAR] [DAY_NUMBER]
 ```

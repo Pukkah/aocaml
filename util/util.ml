@@ -1,5 +1,10 @@
 (** Utils for Advent of Code *)
 
+let trim_trailing_newline str =
+  let len = String.length str in
+  if len > 0 && str.[len - 1] = '\n' then String.sub str 0 (len - 1) else str
+;;
+
 (** Split string on newlines *)
 let get_lines = String.split_on_char '\n'
 

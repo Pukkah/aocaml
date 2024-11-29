@@ -1,4 +1,4 @@
-let input = "1abc2\npqr3stu8vwx\na1b2c3d4e5f\ntreb7uchet"
+let input' = "1abc2\npqr3stu8vwx\na1b2c3d4e5f\ntreb7uchet"
 
 let input2 =
   "two1nine\n\
@@ -48,12 +48,17 @@ let solve_puzzle parser input =
 ;;
 
 (*  Part1 *)
-let part1 = solve_puzzle get_value input
+let part1 = solve_puzzle get_value
 
 (*  Part2 *)
-let part2 = solve_puzzle get_value_literal input2
+let part2 = solve_puzzle get_value_literal
 
-let run () =
-  print_endline @@ "Part 1: " ^ string_of_int part1;
-  print_endline @@ "Part 2: " ^ string_of_int part2
+let run ?input () =
+  let input1, input2 =
+    match input with
+    | Some i -> i, i
+    | None -> input', input2
+  in
+  print_endline @@ "Part 1: " ^ string_of_int (part1 input1);
+  print_endline @@ "Part 2: " ^ string_of_int (part2 input2)
 ;;

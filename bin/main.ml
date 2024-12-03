@@ -16,6 +16,7 @@ let () =
   and input = !input in
   let solve_puzzle =
     match year, day with
+    (* 2023 *)
     | 2023, 1 -> Year2023.Day01.run ?input
     | 2023, 2 -> Year2023.Day02.run
     | 2023, 4 -> Year2023.Day04.run
@@ -32,6 +33,8 @@ let () =
     | 2023, 16 -> Year2023.Day16.run
     | 2023, 19 -> Year2023.Day19.run
     | 2023, 21 -> Year2023.Day21.run
+    (* 2024 *)
+    | 2024, 1 -> Year2024.Day01.run ?input
     | _ -> failwith "not implemented"
   in
   Printf.printf "\nAdvent of Code %i - Day %i\n" year day;

@@ -42,6 +42,7 @@ let () =
     | 2024, 7 -> Year2024.Day07.run ?input
     | 2024, 9 -> Year2024.Day09.run ?input
     | 2024, 11 -> Year2024.Day11.run ?input
+    | 2024, 19 -> Year2024.Day19.run ?input
     | _ -> failwith "not implemented"
   in
   Printf.printf "\nAdvent of Code %i - Day %i\n" year day;
